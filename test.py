@@ -22,7 +22,7 @@ class Test(CameraWindow):
         super().__init__(**kwargs)
         self.wnd.mouse_exclusivity = True
         self.camera.mouse_sensitivity = 0.1
-        self.camera.velocity = 200.0
+        self.camera.velocity = 100.0
         self.camera.projection.update(near=0.01, far=1000)
         # self.timer.pause()
 
