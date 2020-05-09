@@ -1,3 +1,4 @@
+import moderngl
 import moderngl_window
 from moderngl_window.scene import KeyboardCamera
 
@@ -30,3 +31,24 @@ class CameraWindow(moderngl_window.WindowConfig):
 
     def resize(self, width: int, height: int):
         self.camera.projection.update(aspect_ratio=self.wnd.aspect_ratio)
+
+
+class Effect:
+
+    def __init__(self, config: moderngl_window.WindowConfig):
+        self._ctx = config.ctx
+        self._config = config
+
+    @property
+    def ctx(self) -> moderngl.Context:
+        return self._ctx
+
+    @property
+    def config(self) -> moderngl_window.WindowConfig:
+        return self._config
+
+    def render(self, time, frame_time, **kwargs):
+        raise NotImplementedError()
+
+    def get_track(self, name: str):
+        pass

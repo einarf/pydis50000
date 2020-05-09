@@ -1,3 +1,6 @@
 __pycache__
 *.pyc
 .venv/
+pydis_50000.egg-info
+build/
+dist/
