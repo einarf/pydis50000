@@ -10,6 +10,9 @@ class Milkyway(Effect):
     def __init__(self, config):
         super().__init__(config)
 
+        self.track1 = self.get_track("bg:a")
+        self.track2 = self.get_track("bg:b")
+
         self.prog =self.config.load_program('programs/milkyway.glsl')
         self.sphere = geometry.sphere(radius=200)
         self.texture = self.config.load_texture_2d('textures/MilkyWayPanorama4K.jpg')

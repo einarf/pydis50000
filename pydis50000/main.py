@@ -1,13 +1,25 @@
 from pathlib import Path
 
 import moderngl
+from moderngl_window.conf import settings
 
 from pydis50000.base import CameraWindow
 from pydis50000.milkyway import Milkyway
 from pydis50000.clouds import AvatarCloud, MorphCloud
 
+from pydis50000.timers import RocketTimer
+from pydis50000.tracks import tracks
 
-class Test(CameraWindow):
+
+settings.ROCKET = {
+    'mode': 'editor',
+    'rps': 28,  # BPM: 112 / 4 = 28
+    'project': None,
+    'files': None,
+}
+
+
+class PyDis50000(CameraWindow):
     title = "PyDis 50000"
     window_size = 1280, 720
     resizable = True
@@ -20,14 +32,29 @@ class Test(CameraWindow):
         self.camera.mouse_sensitivity = 0.1
         self.camera.velocity = 100.0
         self.camera.projection.update(near=0.01, far=1000)
-        # self.timer.pause()
+
 
         self.avatar_cloud = AvatarCloud(self)
         self.milkyway = Milkyway(self)
         # self.earth = Earth(self)
         self.morph_cloud = MorphCloud(self)
 
+        self.track1 = tracks.get('test_1')
+        self.track2 = tracks.get('test_2')
+        self.track3 = tracks.get('test_3')
+
+        self.timer = RocketTimer()
+        self.timer.start()
+        self.frame_time = 60.0 / 1000.0
+        self.prev_time = 0
+
+
     def render(self, time, frame_time):
+        # Let's hack around the the timer system for now using custom ones
+        frame_time = time - self.prev_time
+        self.prev_time = time
+        time = self.timer.get_time()
+
         # self.ctx.blend_func = moderngl.ONE, moderngl.ONE, moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA 
 
         projection = self.camera.projection.matrix
@@ -51,4 +78,4 @@ class Test(CameraWindow):
 
 
 if __name__ == '__main__':
-    Test.run()
+    PyDis50000.run()

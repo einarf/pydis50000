@@ -1,6 +1,10 @@
 import moderngl
 import moderngl_window
+
 from moderngl_window.scene import KeyboardCamera
+from rocket.tracks import Track
+
+from pydis50000.tracks import tracks
 
 
 class CameraWindow(moderngl_window.WindowConfig):
@@ -50,5 +54,5 @@ class Effect:
     def render(self, time, frame_time, **kwargs):
         raise NotImplementedError()
 
-    def get_track(self, name: str):
-        pass
+    def get_track(self, name: str) -> Track:
+        return tracks.get(name)
