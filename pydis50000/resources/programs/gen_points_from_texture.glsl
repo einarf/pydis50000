@@ -16,6 +16,7 @@ layout(points, max_vertices = 1) out;
 uniform sampler2D texture0;
 
 out vec3 out_pos;
+out vec3 out_color;
 
 void main() {
     vec2 pos = gl_in[0].gl_Position.xy;
@@ -25,14 +26,11 @@ void main() {
     // 255 255 255
     if (frag == vec3(202.0/255.0, 214.0/255.0, 255.0/255.0) || frag == vec3(1.0, 1.0, 1.0)) {
         out_pos = vec3(pos - vec2(256, 256), -400.0);
+        out_color = frag.xyz;
+        // out_color = vec3((gl_PrimitiveIDIn % 100) / 100.0);
         EmitVertex();
         EndPrimitive();
     }
-
-    // out_pos = vec3(pos, 0.0);
-    // EmitVertex();
-    // EndPrimitive();
-    
 }
 
 #endif

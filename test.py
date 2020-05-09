@@ -16,7 +16,7 @@ class Test(CameraWindow):
     window_size = 1280, 720
     resizable = True
     resource_dir = Path(__file__).parent.resolve() / 'pydis50000/resources'
-    # samples = 16
+    samples = 16
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -43,12 +43,16 @@ class Test(CameraWindow):
         self.ctx.enable(moderngl.DEPTH_TEST)
         # self.earth.render(projection, modelview, time=time)
 
-        self.ctx.enable(moderngl.BLEND)
+        # self.ctx.enable(moderngl.BLEND)
         # self.avatar_cloud.render(projection, modelview)
         self.morph_cloud.render(projection, modelview, time=time)
 
-    def resize(self, width, height):
-        pass
+    def key_event(self, key, action, modifiers):
+        super().key_event(key, action, modifiers)
+        if action == self.wnd.keys.ACTION_PRESS:
+            if key == self.wnd.keys.R:
+                self.timer.time = 0
+
 
 
 class Milkyway:
@@ -77,9 +81,10 @@ class MorphCloud:
         self.ctx = config.ctx
 
         self.logo_texture = self.config.load_texture_2d('textures/logo_full_512.png')
-        self.gen_texture_points_prog = self.config.load_program('programs/gen_points_from_texture.glsl')
 
-        self.dest_buffer = self.ctx.buffer(reserve=512 * 512 * 12)  # Room for vec3 for all texture positions
+        # Generate destination data from texture
+        self.gen_texture_points_prog = self.config.load_program('programs/gen_points_from_texture.glsl')
+        self.dest_buffer = self.ctx.buffer(reserve=512 * 512 * 24)  # Room for vec3 x 2 for all texture positions
         self.gen_vao = self.ctx.vertex_array(self.gen_texture_points_prog, [])
         self.query = self.ctx.query()
 
@@ -103,7 +108,7 @@ class MorphCloud:
             self.morph_prog,
             [
                 (self.start_buffer, '3f', 'in_pos'),
-                (self.dest_buffer, '3f', 'in_dest'),
+                (self.dest_buffer, '3f 3f', 'in_dest', 'in_color'),
             ]
         )
         self.morph_prog['num_layers'] = avatar_count
@@ -111,7 +116,7 @@ class MorphCloud:
     def render(self, projection, modelview, time=0):
         self.morph_prog['m_mv'].write(modelview)
         self.morph_prog['m_proj'].write(projection)
-        self.morph_prog['interpolate'] = min(time / 40.0, 1.0)
+        self.morph_prog['interpolate'] = min(1 - pow(time / 10.0, 2), 1.0)
         self.avatar_texture.use(0)
         self.morph_vao.render(mode=moderngl.POINTS, vertices=self.num_points)
 
