@@ -1,10 +1,83 @@
+"""
+This is just hacking in all the old timers from demosys-py.
+Ugly as hell, but it works in minutes.
+"""
 from rocket import Rocket
 from rocket.controllers import TimeController
 
 from moderngl_window.conf import settings
-from moderngl_window.timers.base import BaseTimer
+from pyglet.media import Player, StaticSource, load
 
 from pydis50000.tracks import tracks
+
+# from pyglet.media import Player
+try:
+    from pygame import mixer
+except ImportError:
+    raise ImportError("pygame is needed for music timer")
+
+
+class BaseTimer:
+    """
+    The base class guiding the implementation of timers.
+    All methods must be implemented.
+    """
+    def __init__(self, **kwargs):
+        pass
+
+    def start(self):
+        """
+        Start the timer initially or resume after pause
+        Raises:
+            NotImplementedError
+        """
+        raise NotImplementedError()
+
+    def pause(self):
+        """
+        Pause the timer
+        Raises:
+            NotImplementedError
+        """
+        raise NotImplementedError()
+
+    def toggle_pause(self):
+        """
+        Toggle pause state
+        Raises:
+            NotImplementedError
+        """
+        raise NotImplementedError()
+
+    def stop(self) -> float:
+        """
+        Stop the timer. Should only be called once when stopping the timer.
+        Returns:
+            The time the timer was stopped
+        Raises:
+            NotImplementedError
+        """
+        raise NotImplementedError()
+
+    def get_time(self) -> float:
+        """
+        Get the current time in seconds
+        Returns:
+            The current time in seconds
+        Raises:
+            NotImplementedError
+        """
+        raise NotImplementedError()
+
+    def set_time(self, value: float):
+        """
+        Set the current time in seconds.
+        Args:
+            value (float): The new time
+        Raises:
+            NotImplementedError
+        """
+        raise NotImplementedError()
 
 
 class RocketTimer(BaseTimer):
@@ -87,5 +160,156 @@ class RocketTimer(BaseTimer):
         Stop the timer
         Returns:
             The current time.
+        """
+        return self.rocket.time
+
+
+class MusicTimer(BaseTimer):
+    """
+    Timer based on the current position in a wav, ogg or mp3 using pygame.mixer.
+    Path to the music file is configured in ``settings.MUSIC``.
+    """
+    def __init__(self, **kwargs):
+        # mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
+        # mixer.music.load(settings.MUSIC)
+        self.source = StaticSource(load(settings.MUSIC))
+        self.player = Player()
+        self.player.queue(self.source)
+
+        self.paused = True
+        # self.pause_time = 0
+        self.initialized = False
+        super().__init__(**kwargs)
+
+    def start(self):
+        """Play the music"""
+        if self.initialized:
+            # mixer.music.unpause()
+            self.player.play()
+        else:
+            # mixer.music.play()
+            self.player.play()
+            self.initialized = True
+
+        self.paused = False
+
+    def pause(self):
+        """Pause the music"""
+        # mixer.music.pause()
+        # self.pause_time = self.get_time()
+        self.player.pause()
+        self.paused = True
+
+    def toggle_pause(self):
+        """Toggle pause mode"""
+        if self.paused:
+            self.start()
+        else:
+            self.pause()
+
+    def stop(self) -> float:
+        """
+        Stop the music
+        Returns:
+            The current location in the music
+        """
+        # mixer.music.stop()
+        t = self.player.time
+        self.player.stop()
+        return t
+
+    def get_time(self) -> float:
+        """
+        Get the current position in the music in seconds
+        """
+        # if self.paused:
+        #     return self.pause_time
+
+        # return mixer.music.get_pos() / 1000.0
+        return self.player.time
+
+    def set_time(self, value: float):
+        """
+        Set the current time in the music in seconds causing the player
+        to seek to this location in the file.
+        """
+        if value < 0:
+            value = 0
+
+        # mixer.music.play(start=value)
+        # mixer.music.set_pos(value)
+        self.player.seek(value)
+
+
+class RocketMusicTimer(RocketTimer):
+    """
+    Combines music.Timer and rocket.Timer
+    """
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.music = MusicTimer(start_paused=self.start_paused)
+
+    def start(self):
+        """Start the timer"""
+        self.music.start()
+        if not self.start_paused:
+            self.music.pause()
+            self.rocket.start()
+
+        self.music.set_time(self.controller.time)
+
+    def get_time(self) -> float:
+        """
+        Get the current time in seconds
+        Returns:
+            The current time in seconds
+        """
+        # if the controller is playing we must play the music if paused
+        if self.controller.playing and self.music.paused:
+            self.music.set_time(self.controller.time)
+            self.music.start()
+            return self.controller.time
+
+        # If the controller is not playing and music is not paused, we need to pause music
+        if not self.controller.playing and not self.music.paused:
+            self.music.pause()
+            self.music.set_time(self.controller.time)
+            return self.controller.time
+
+        rt = super().get_time()
+        t = self.music.get_time()
+
+        if abs(rt - t) > 0.1:
+            print("Music out of sync!!!", t, rt)
+            self.music.set_time(rt)
+
+        print(self.music.paused, self.controller.playing)
+
+        return rt
+
+    def set_time(self, value: float):
+        """
+        Set the current time jumping in the timeline
+        Args:
+            value (float): The new time value
+        """
+        print('set_time', value)
+        self.music.set_time(value)
+
+    def pause(self):
+        """Pause the timer"""
+        self.controller.playing = False
+        self.music.pause()
+
+    def toggle_pause(self):
+        """Toggle pause mode"""
+        self.controller.playing = not self.controller.playing
+        self.music.toggle_pause()
+
+    def stop(self) -> float:
+        """
+        Stop the timer
+        Returns:
+            The current time
         """
         return self.rocket.time
