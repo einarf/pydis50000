@@ -16,7 +16,7 @@ class Test(CameraWindow):
     window_size = 1280, 720
     resizable = True
     resource_dir = Path(__file__).parent.resolve() / 'pydis50000/resources'
-    samples = 16
+    # samples = 16
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -111,7 +111,7 @@ class MorphCloud:
     def render(self, projection, modelview, time=0):
         self.morph_prog['m_mv'].write(modelview)
         self.morph_prog['m_proj'].write(projection)
-        self.morph_prog['interpolate'] = min(time / 10.0, 1.0)
+        self.morph_prog['interpolate'] = min(time / 40.0, 1.0)
         self.avatar_texture.use(0)
         self.morph_vao.render(mode=moderngl.POINTS, vertices=self.num_points)
 
