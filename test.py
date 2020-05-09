@@ -16,7 +16,7 @@ class Test(CameraWindow):
     window_size = 1280, 720
     resizable = True
     resource_dir = Path(__file__).parent.resolve() / 'pydis50000/resources'
-    samples = 16
+    # samples = 16
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
