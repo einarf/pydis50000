@@ -13,7 +13,7 @@ from pydis50000.base import CameraWindow
 
 class Test(CameraWindow):
     title = "PyDis 50000"
-    window_size = 1920, 1080
+    window_size = 1280, 720
     resizable = True
     resource_dir = Path(__file__).parent.resolve() / 'pydis50000/resources'
     samples = 16
