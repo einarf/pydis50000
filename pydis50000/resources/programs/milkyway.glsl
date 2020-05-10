@@ -17,13 +17,15 @@ void main() {
 
 #elif defined FRAGMENT_SHADER
 
-out vec4 fragColor;
 uniform sampler2D texture0;
+uniform float intensity;
+
+out vec4 fragColor;
 in vec2 uv;
 
 void main()
 {
-    fragColor = texture(texture0, uv);
+    fragColor = texture(texture0, uv) * (1.0 + intensity);
 }
 
 #endif
