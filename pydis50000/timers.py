@@ -10,12 +10,6 @@ from pyglet.media import Player, StaticSource, load
 
 from pydis50000.tracks import tracks
 
-# from pyglet.media import Player
-try:
-    from pygame import mixer
-except ImportError:
-    raise ImportError("pygame is needed for music timer")
-
 
 class BaseTimer:
     """
@@ -170,24 +164,19 @@ class MusicTimer(BaseTimer):
     Path to the music file is configured in ``settings.MUSIC``.
     """
     def __init__(self, **kwargs):
-        # mixer.init(frequency=44100, size=-16, channels=2, buffer=4096)
-        # mixer.music.load(settings.MUSIC)
         self.source = StaticSource(load(settings.MUSIC))
         self.player = Player()
         self.player.queue(self.source)
 
         self.paused = True
-        # self.pause_time = 0
         self.initialized = False
         super().__init__(**kwargs)
 
     def start(self):
         """Play the music"""
         if self.initialized:
-            # mixer.music.unpause()
             self.player.play()
         else:
-            # mixer.music.play()
             self.player.play()
             self.initialized = True
 
@@ -195,8 +184,6 @@ class MusicTimer(BaseTimer):
 
     def pause(self):
         """Pause the music"""
-        # mixer.music.pause()
-        # self.pause_time = self.get_time()
         self.player.pause()
         self.paused = True
 
@@ -213,7 +200,6 @@ class MusicTimer(BaseTimer):
         Returns:
             The current location in the music
         """
-        # mixer.music.stop()
         t = self.player.time
         self.player.stop()
         return t
@@ -222,10 +208,6 @@ class MusicTimer(BaseTimer):
         """
         Get the current position in the music in seconds
         """
-        # if self.paused:
-        #     return self.pause_time
-
-        # return mixer.music.get_pos() / 1000.0
         return self.player.time
 
     def set_time(self, value: float):
@@ -236,8 +218,6 @@ class MusicTimer(BaseTimer):
         if value < 0:
             value = 0
 
-        # mixer.music.play(start=value)
-        # mixer.music.set_pos(value)
         self.player.seek(value)
 
 
@@ -280,12 +260,12 @@ class RocketMusicTimer(RocketTimer):
         t = self.music.get_time()
 
         if abs(rt - t) > 0.1:
-            print("Music out of sync!!!", t, rt)
+            # print("Music out of sync!!!", t, rt)
             self.music.set_time(rt)
+            return rt
 
-        print(self.music.paused, self.controller.playing)
-
-        return rt
+        # print(self.music.paused, self.controller.playing)
+        return t
 
     def set_time(self, value: float):
         """
@@ -293,7 +273,7 @@ class RocketMusicTimer(RocketTimer):
         Args:
             value (float): The new time value
         """
-        print('set_time', value)
+        # print('set_time', value)
         self.music.set_time(value)
 
     def pause(self):
