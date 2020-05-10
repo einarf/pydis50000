@@ -21,8 +21,8 @@ import pyglet
 
 RESOURCE_ROOT = Path(__file__).parent.resolve() / 'resources'
 settings.ROCKET = {
-    'mode': 'editor',  # Connect to external editor
-    #'mode': 'project',  # Load the project file
+    #'mode': 'editor',  # Connect to external editor
+    'mode': 'project',  # Load the project file
     'rps': 28,  # BPM: 112 / 4 = 28
     'project': RESOURCE_ROOT / 'tracks.xml',
     'files': None,  # For remote export. We don't use this
