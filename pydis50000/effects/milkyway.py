@@ -13,6 +13,8 @@ class Milkyway(Effect):
     def __init__(self, config):
         super().__init__(config)
 
+        self.track_intensity = self.get_track('intensity')
+
         self.prog =self.config.load_program('programs/milkyway.glsl')
         self.sphere = geometry.sphere(radius=200)
         # self.texture = self.config.load_texture_2d('textures/MilkyWayPanorama4K.jpg')
@@ -26,4 +28,5 @@ class Milkyway(Effect):
         self.prog['m_proj'].write(projection)
 
         self.texture.use(0)
+        self.prog['intensity'] = self.track_intensity.time_value(time)
         self.sphere.render(self.prog)
