@@ -66,13 +66,7 @@ class PyDis50000(CameraWindow):
 
     def render(self, time, frame_time):
         pyglet.clock.tick()
-        # Let's hack around the the timer system for now using custom ones
-        # frame_time = time - self.prev_time
-        # self.prev_time = time
         time = self.timer.get_time()
-        # print('render', time)
-
-        # self.ctx.blend_func = moderngl.ONE, moderngl.ONE, moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA 
 
         translation = matrix44.create_from_translation((
             self.cam_x.time_value(time),
@@ -92,16 +86,22 @@ class PyDis50000(CameraWindow):
         self.milkyway.render(projection, modelview)
 
         self.ctx.enable(moderngl.DEPTH_TEST)
-        self.voyager.render(projection, modelview)
+        # self.voyager.render(projection, modelview)
 
         # self.avatar_cloud.render(projection, modelview)
         self.morph_cloud.render(projection, modelview, time=time)
 
     def key_event(self, key, action, modifiers):
         super().key_event(key, action, modifiers)
-        if action == self.wnd.keys.ACTION_PRESS:
-            if key == self.wnd.keys.R:
+        keys = self.wnd.keys
+
+        if action == keys.ACTION_PRESS:
+            if key == keys.R:
                 self.timer.time = 0
+            elif key == keys.LEFT:
+                self.timer.set_time(self.timer.get_time() - 10)
+            elif key == keys.RIGHT:
+                self.timer.set_time(self.timer.get_time() + 10)
 
 
 if __name__ == '__main__':

@@ -264,7 +264,6 @@ class RocketMusicTimer(RocketTimer):
             self.music.set_time(rt)
             return rt
 
-        # print(self.music.paused, self.controller.playing)
         return t
 
     def set_time(self, value: float):
@@ -273,7 +272,7 @@ class RocketMusicTimer(RocketTimer):
         Args:
             value (float): The new time value
         """
-        # print('set_time', value)
+        super().set_time(value)
         self.music.set_time(value)
 
     def pause(self):
