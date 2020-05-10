@@ -12,6 +12,7 @@ from pydis50000.effects import (
     AvatarCloud, 
     MorphCloud,
     Voyager,
+    PydisLogo,
 )
 
 from pydis50000.timers import RocketMusicTimer, RocketTimer
@@ -48,8 +49,16 @@ class PyDis50000(CameraWindow):
         self.screen_quad = geometry.quad_fs()
         self.screen_quad_prog = self.load_program('programs/screen_quad.glsl')
         self.offscreen = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture(self.wnd.size, 4)]
+            color_attachments=[self.ctx.texture(self.wnd.size, 4)],
+            depth_attachment=self.ctx.depth_texture(self.wnd.size),
         )
+
+        # --- Global resources
+        avatar_size = 256
+        avatar_count = 22
+        data = self.load_binary('avatars.bin')
+        self.avatar_texture = self.ctx.texture_array((avatar_size, avatar_size, avatar_count), 4, data=data)
+        self.avatar_texture.build_mipmaps()
 
         # --- Initialize effects
         self.router = EffecRouter(self)
@@ -106,7 +115,8 @@ class PyDis50000(CameraWindow):
             self.offscreen.color_attachments[0].release()
             self.offscreen.release()
         self.offscreen = self.ctx.framebuffer(
-            color_attachments=[self.ctx.texture((width, height), 4)]
+            color_attachments=[self.ctx.texture((width, height), 4)],
+            depth_attachment=self.ctx.depth_texture(self.wnd.size),
         )
 
     def key_event(self, key, action, modifiers):
@@ -131,6 +141,7 @@ class EffecRouter:
         self.effects.append(Milkyway(config))
         self.effects.append(MorphCloud(config))
         self.effects.append(Voyager(config))
+        self.effects.append(PydisLogo(config))
         # self.earth = Earth(self)
 
         # Sort by order

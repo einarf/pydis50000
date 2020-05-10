@@ -3,7 +3,10 @@
 <tracks rows="10000" startRow="0" endRow="10000" rowsPerBeat="28"
 beatsPerMin="112">
 	<track name="active:avatar_cloud" folded="0" muteKeyCount="0"
-color="ffb27474" />
+color="ffb27474">
+		<key row="392" value="1.000000" interpolation="0" />
+		<key row="780" value="0.000000" interpolation="0" />
+	</track>
 	<track name="active:milkyway" folded="0" muteKeyCount="0"
 color="ffb28050">
 		<key row="0" value="1.000000" interpolation="0" />
@@ -14,7 +17,7 @@ color="ffa9b250">
 	</track>
 	<track name="active:morph_cloud" folded="0" muteKeyCount="0"
 color="ffa9b250">
-		<key row="0" value="1.000000" interpolation="0" />
+		<key row="780" value="1.000000" interpolation="0" />
 	</track>
 	<track name="active:voyager" folded="0" muteKeyCount="0"
 color="ff60b250" />
@@ -24,9 +27,10 @@ color="ffb27474" />
 color="ffb28050" />
 	<track name="camera:pos_z" folded="0" muteKeyCount="0"
 color="ffa9b250">
-		<key row="0" value="-314.100006" interpolation="1" />
-		<key row="168" value="100.000000" interpolation="2" />
-		<key row="392" value="-1000.000000" interpolation="2" />
+		<key row="0" value="0.000000" interpolation="1" />
+		<key row="392" value="0.000000" interpolation="1" />
+		<key row="779" value="100.000000" interpolation="1" />
+		<key row="780" value="-200.000000" interpolation="1" />
 	</track>
 	<track name="camera:rot_x" folded="0" muteKeyCount="0"
 color="ff60b250">
@@ -34,16 +38,34 @@ color="ff60b250">
 	</track>
 	<track name="camera:rot_y" folded="0" muteKeyCount="0"
 color="ff4fb292">
-		<key row="0" value="0.000000" interpolation="3" />
+		<key row="0" value="0.000000" interpolation="2" />
 	</track>
 	<track name="camera:tilt" folded="0" muteKeyCount="0"
 color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="2" />
-		<key row="788" value="360.000000" interpolation="0" />
+		<key row="392" value="60.000000" interpolation="2" />
+		<key row="1260" value="360.000000" interpolation="2" />
 	</track>
 	<track name="camera:fade" folded="0" muteKeyCount="0"
 color="ffa9b250">
+		<key row="0" value="0.000000" interpolation="1" />
+		<key row="112" value="1.000000" interpolation="0" />
+	</track>
+	<track name="active:logo" folded="0" muteKeyCount="0"
+color="ff4fb292">
 		<key row="0" value="1.000000" interpolation="0" />
+	</track>
+	<track name="morph_cloud:morph" folded="0" muteKeyCount="0"
+color="ff4f71b2">
+		<key row="780" value="0.000000" interpolation="2" />
+		<key row="1260" value="1.000000" interpolation="0" />
+	</track>
+	<track name="logo:fade" folded="0" muteKeyCount="0"
+color="ff8850b2">
+		<key row="112" value="0.000000" interpolation="2" />
+		<key row="252" value="1.000000" interpolation="2" />
+		<key row="728" value="1.000000" interpolation="2" />
+		<key row="780" value="0.000000" interpolation="2" />
 	</track>
 </tracks>
 	</rootElement>
