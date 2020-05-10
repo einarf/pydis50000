@@ -49,7 +49,7 @@ class Effect:
         if self.order is None:
             raise ValueError("Effect is missing order property")
 
-        self.rocket_timeline_track = self.get_track(f"active:{self.name}")
+        self.rocket_timeline_track = self.get_track(f"active:{self.name}", prefix=False)
 
     @property
     def ctx(self) -> moderngl.Context:
@@ -62,5 +62,8 @@ class Effect:
     def render(self, time=0, frametime=0, projection=None, modelview=None, target=None):
         raise NotImplementedError()
 
-    def get_track(self, name: str) -> Track:
-        return tracks.get(name)
+    def get_track(self, name: str, prefix=True) -> Track:
+        if prefix:
+            return tracks.get(f"{self.name}:{name}")
+        else:
+            return tracks.get(name)
