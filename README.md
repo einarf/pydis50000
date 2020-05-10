@@ -38,16 +38,16 @@ BPM: 112
 
 Timestamps
 ```
-Intro
-00:00 - 00:13
-00:13 - 00:27
+Intro (27s)
+00:00 - 00:13 - Some logo?
+00:13 - 00:27 - 
 
-Buildup
+Buildup (1 minute) - Traveling Avatars
 00:27 - 00:44
 00:40 - 01:12
 01:12 - 01:29
 
-Intensive part
+Intensive part (1 min) - Emerging to central point (0, 0, 0) fade)
 01:29 - 01:42
 01:42 - 01:57
 01:57 - 02:10
@@ -88,3 +88,14 @@ Meh? Might not fit, but could be emergency filler
 * Sagan image (barely visible)
 * Earth Model
 * Voyager model
+
+## Tools & Libraries
+
+* Rocket OpenGL Editor : https://github.com/emoon/rocket
+* pyrocket - A rocket client : https://github.com/Contraz/pyrocket
+* Blender : https://www.blender.org/
+* moderngl : https://github.com/moderngl/moderngl
+* moderngl-window : https://github.com/moderngl/moderngl-window
+
+## Attributions
+
