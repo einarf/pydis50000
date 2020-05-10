@@ -1,11 +1,17 @@
+import math
 from pathlib import Path
 
 import moderngl
 from moderngl_window.conf import settings
+from pyrr import matrix44
 
 from pydis50000.base import CameraWindow
-from pydis50000.milkyway import Milkyway
-from pydis50000.clouds import AvatarCloud, MorphCloud
+from pydis50000.effects import (
+    Milkyway,
+    AvatarCloud, 
+    MorphCloud,
+    Voyager,
+)
 
 from pydis50000.timers import RocketMusicTimer as Timer
 from pydis50000.tracks import tracks
@@ -13,10 +19,11 @@ import pyglet
 
 RESOURCE_ROOT = Path(__file__).parent.resolve() / 'resources'
 settings.ROCKET = {
-    'mode': 'editor',
+    # 'mode': 'editor',
+    'mode': 'project',
     'rps': 28,  # BPM: 112 / 4 = 28
-    'project': None,
-    'files': None,
+    'project': RESOURCE_ROOT / 'tracks.xml',
+    'files': None,  # For remote export. We don't use this
 }
 settings.MUSIC = str(RESOURCE_ROOT / 'audio' / 'Scott_Holmes_Together_We_Stand.wav')
 
@@ -32,7 +39,7 @@ class PyDis50000(CameraWindow):
         super().__init__(**kwargs)
         # self.wnd.mouse_exclusivity = True
         self.camera.mouse_sensitivity = 0.1
-        self.camera.velocity = 100.0
+        self.camera.velocity = 10.0
         self.camera.projection.update(near=0.01, far=1000)
         self.camera_enabled = False
 
@@ -41,11 +48,15 @@ class PyDis50000(CameraWindow):
         self.milkyway = Milkyway(self)
         # self.earth = Earth(self)
         self.morph_cloud = MorphCloud(self)
+        self.voyager = Voyager(self)
 
         # --- All timer and track related here
-        self.track1 = tracks.get('test_1')
-        self.track2 = tracks.get('test_2')
-        self.track3 = tracks.get('test_3')
+        self.cam_x = tracks.get('camera:pos_x')
+        self.cam_y = tracks.get('camera:pos_y')
+        self.cam_z = tracks.get('camera:pos_z')
+        self.cam_rot_x = tracks.get('camera:rot_x')
+        self.cam_rot_z = tracks.get('camera:rot_y')
+        self.cam_rot_tilt = tracks.get('camera:tilt')
 
         self.timer = Timer()
         self.timer.start()
@@ -63,16 +74,26 @@ class PyDis50000(CameraWindow):
 
         # self.ctx.blend_func = moderngl.ONE, moderngl.ONE, moderngl.SRC_ALPHA, moderngl.ONE_MINUS_SRC_ALPHA 
 
+        translation = matrix44.create_from_translation((
+            self.cam_x.time_value(time),
+            self.cam_y.time_value(time),
+            self.cam_z.time_value(time),
+        ), dtype='f4')
+        rotation = matrix44.create_from_eulers((
+            math.radians(self.cam_rot_x.time_value(time)),
+            math.radians(self.cam_rot_tilt.time_value(time)),
+            math.radians(self.cam_rot_z.time_value(time)),
+        ), dtype='f4')
+
         projection = self.camera.projection.matrix
-        modelview = self.camera.matrix
+        modelview = matrix44.multiply(matrix44.multiply(translation, rotation), self.camera.matrix)
 
         self.ctx.enable_only(moderngl.NOTHING)
         self.milkyway.render(projection, modelview)
 
         self.ctx.enable(moderngl.DEPTH_TEST)
-        # self.earth.render(projection, modelview, time=time)
+        self.voyager.render(projection, modelview)
 
-        # self.ctx.enable(moderngl.BLEND)
         # self.avatar_cloud.render(projection, modelview)
         self.morph_cloud.render(projection, modelview, time=time)
 

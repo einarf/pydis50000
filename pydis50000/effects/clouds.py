@@ -11,9 +11,6 @@ class AvatarCloud(Effect):
     def __init__(self, config):
         super().__init__(config)
 
-        self.track1 = self.get_track("cloud:a")
-        self.track2 = self.get_track("cloud:b")
-
         avatar_size = 256
         avatar_count = 22
         data = self.config.load_binary('avatars.bin')
