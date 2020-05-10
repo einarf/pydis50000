@@ -1,2 +1,2 @@
 moderngl-window==2.1.*
-pyrocket==0.2.8
+pyrocket==0.2.9
