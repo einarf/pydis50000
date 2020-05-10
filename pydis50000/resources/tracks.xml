@@ -37,5 +37,9 @@ color="ff4f71b2">
 		<key row="0" value="0.000000" interpolation="2" />
 		<key row="788" value="360.000000" interpolation="0" />
 	</track>
+	<track name="camera:fade" folded="0" muteKeyCount="0"
+color="ffa9b250">
+		<key row="0" value="1.000000" interpolation="1" />
+	</track>
 </tracks>
 	</rootElement>

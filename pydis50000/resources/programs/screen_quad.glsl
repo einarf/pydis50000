@@ -7,17 +7,19 @@ in vec2 in_texcoord_0;
 out vec2 uv0;
 
 void main() {
-    gl_Position = vec4(in_position, 1);
+    gl_Position = vec4(in_position, 1.0);
     uv0 = in_texcoord_0;
 }
 
 #elif defined FRAGMENT_SHADER
 
-out vec4 fragColor;
 uniform sampler2D texture0;
+uniform float fade;
+
+out vec4 fragColor;
 in vec2 uv0;
 
 void main() {
-    fragColor = texture(texture0, uv0);
+    fragColor = texture(texture0, uv0) * fade;
 }
 #endif

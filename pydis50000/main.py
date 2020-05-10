@@ -3,6 +3,7 @@ from pathlib import Path
 
 import moderngl
 from moderngl_window.conf import settings
+from moderngl_window import geometry
 from pyrr import matrix44
 
 from pydis50000.base import CameraWindow
@@ -19,8 +20,8 @@ import pyglet
 
 RESOURCE_ROOT = Path(__file__).parent.resolve() / 'resources'
 settings.ROCKET = {
-    #'mode': 'editor',  # Connect to external editor
-    'mode': 'project',  # Load the project file
+    'mode': 'editor',  # Connect to external editor
+    #'mode': 'project',  # Load the project file
     'rps': 28,  # BPM: 112 / 4 = 28
     'project': RESOURCE_ROOT / 'tracks.xml',
     'files': None,  # For remote export. We don't use this
@@ -43,16 +44,24 @@ class PyDis50000(CameraWindow):
         self.camera.projection.update(near=0.01, far=1000)
         self.camera_enabled = False
 
+        # Framebuffers & Postprocessing stuff
+        self.screen_quad = geometry.quad_fs()
+        self.screen_quad_prog = self.load_program('programs/screen_quad.glsl')
+        self.offscreen = self.ctx.framebuffer(
+            color_attachments=[self.ctx.texture(self.wnd.size, 4)]
+        )
+
         # --- Initialize effects
         self.router = EffecRouter(self)
 
         # --- All timer and track related here
-        self.cam_x = tracks.get('camera:pos_x')
-        self.cam_y = tracks.get('camera:pos_y')
-        self.cam_z = tracks.get('camera:pos_z')
-        self.cam_rot_x = tracks.get('camera:rot_x')
-        self.cam_rot_z = tracks.get('camera:rot_y')
-        self.cam_rot_tilt = tracks.get('camera:tilt')
+        self.track_cam_x = tracks.get('camera:pos_x')
+        self.track_cam_y = tracks.get('camera:pos_y')
+        self.track_cam_z = tracks.get('camera:pos_z')
+        self.track_cam_rot_x = tracks.get('camera:rot_x')
+        self.track_cam_rot_z = tracks.get('camera:rot_y')
+        self.track_cam_rot_tilt = tracks.get('camera:tilt')
+        self.track_fade = tracks.get('camera:fade')
 
         # self.timer = RocketTimer()
         self.timer = RocketMusicTimer()
@@ -64,22 +73,41 @@ class PyDis50000(CameraWindow):
         pyglet.clock.tick()
         time = self.timer.get_time()
 
+        # Prepare camera matrix
         translation = matrix44.create_from_translation((
-            self.cam_x.time_value(time),
-            self.cam_y.time_value(time),
-            self.cam_z.time_value(time),
+            self.track_cam_x.time_value(time),
+            self.track_cam_y.time_value(time),
+            self.track_cam_z.time_value(time),
         ), dtype='f4')
         rotation = matrix44.create_from_eulers((
-            math.radians(self.cam_rot_x.time_value(time)),
-            math.radians(self.cam_rot_tilt.time_value(time)),
-            math.radians(self.cam_rot_z.time_value(time)),
+            math.radians(self.track_cam_rot_x.time_value(time)),
+            math.radians(self.track_cam_rot_tilt.time_value(time)),
+            math.radians(self.track_cam_rot_z.time_value(time)),
         ), dtype='f4')
 
         projection = self.camera.projection.matrix
         modelview = matrix44.multiply(matrix44.multiply(translation, rotation), self.camera.matrix)
 
+        # Render active effects
+        self.offscreen.use()
+        self.offscreen.clear()
         for effect in self.router.gen_active_effects(time):
             effect.render(time=time, projection=projection, modelview=modelview)
+
+        # # Postprocessing
+        self.wnd.use()
+        self.offscreen.color_attachments[0].use()
+        self.screen_quad_prog['fade'].value = self.track_fade.time_value(time)
+        self.screen_quad.render(self.screen_quad_prog)
+
+    def resize(self, width, height):
+        super().resize(width, height)
+        if self.offscreen:
+            self.offscreen.color_attachments[0].release()
+            self.offscreen.release()
+        self.offscreen = self.ctx.framebuffer(
+            color_attachments=[self.ctx.texture((width, height), 4)]
+        )
 
     def key_event(self, key, action, modifiers):
         super().key_event(key, action, modifiers)
