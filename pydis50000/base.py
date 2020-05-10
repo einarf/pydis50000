@@ -38,10 +38,18 @@ class CameraWindow(moderngl_window.WindowConfig):
 
 
 class Effect:
+    name = None
+    order = None
 
     def __init__(self, config: moderngl_window.WindowConfig):
         self._ctx = config.ctx
         self._config = config
+        if self.name is None:
+            raise ValueError("Effect is missing name property")
+        if self.order is None:
+            raise ValueError("Effect is missing order property")
+
+        self.rocket_timeline_track = self.get_track(f"active:{self.name}")
 
     @property
     def ctx(self) -> moderngl.Context:
@@ -51,7 +59,7 @@ class Effect:
     def config(self) -> moderngl_window.WindowConfig:
         return self._config
 
-    def render(self, time, frame_time, **kwargs):
+    def render(self, time=0, frametime=0, projection=None, modelview=None, target=None):
         raise NotImplementedError()
 
     def get_track(self, name: str) -> Track:

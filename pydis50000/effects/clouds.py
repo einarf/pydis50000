@@ -2,11 +2,14 @@ import random
 from array import array
 
 import moderngl
+from moderngl_window import WindowConfig
 
 from pydis50000.base import Effect
 
 
 class AvatarCloud(Effect):
+    name = 'avatar_cloud'
+    order = 5
 
     def __init__(self, config):
         super().__init__(config)
@@ -25,7 +28,8 @@ class AvatarCloud(Effect):
         )
         self.prog['num_layers'] = avatar_count
 
-    def render(self, projection, modelview):
+    def render(self, time=0, frametime=0, projection=None, modelview=None, target=None):
+        self.ctx.enable_only(moderngl.DEPTH_TEST)
         self.prog['m_mv'].write(modelview)
         self.prog['m_proj'].write(projection)
         self.texture.use(0)
@@ -39,8 +43,10 @@ class AvatarCloud(Effect):
 
 
 class MorphCloud(Effect):
+    name = 'morph_cloud'
+    order = 5
 
-    def __init__(self, config):
+    def __init__(self, config: WindowConfig):
         super().__init__(config)
 
         self.logo_texture = self.config.load_texture_2d('textures/logo_full_512.png')
@@ -76,7 +82,8 @@ class MorphCloud(Effect):
         )
         self.morph_prog['num_layers'] = avatar_count
 
-    def render(self, projection, modelview, time=0):
+    def render(self, time=0, frametime=0, projection=None, modelview=None, target=None):
+        self.ctx.enable_only(moderngl.DEPTH_TEST)
         self.morph_prog['m_mv'].write(modelview)
         self.morph_prog['m_proj'].write(projection)
         self.morph_prog['interpolate'] = min(1 - pow(time / 10.0, 2), 1.0)

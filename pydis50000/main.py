@@ -13,14 +13,14 @@ from pydis50000.effects import (
     Voyager,
 )
 
-from pydis50000.timers import RocketMusicTimer as Timer
+from pydis50000.timers import RocketMusicTimer, RocketTimer
 from pydis50000.tracks import tracks
 import pyglet
 
 RESOURCE_ROOT = Path(__file__).parent.resolve() / 'resources'
 settings.ROCKET = {
-    # 'mode': 'editor',
-    'mode': 'project',
+    #'mode': 'editor',  # Connect to external editor
+    'mode': 'project',  # Load the project file
     'rps': 28,  # BPM: 112 / 4 = 28
     'project': RESOURCE_ROOT / 'tracks.xml',
     'files': None,  # For remote export. We don't use this
@@ -44,11 +44,7 @@ class PyDis50000(CameraWindow):
         self.camera_enabled = False
 
         # --- Initialize effects
-        self.avatar_cloud = AvatarCloud(self)
-        self.milkyway = Milkyway(self)
-        # self.earth = Earth(self)
-        self.morph_cloud = MorphCloud(self)
-        self.voyager = Voyager(self)
+        self.router = EffecRouter(self)
 
         # --- All timer and track related here
         self.cam_x = tracks.get('camera:pos_x')
@@ -58,9 +54,9 @@ class PyDis50000(CameraWindow):
         self.cam_rot_z = tracks.get('camera:rot_y')
         self.cam_rot_tilt = tracks.get('camera:tilt')
 
-        self.timer = Timer()
+        # self.timer = RocketTimer()
+        self.timer = RocketMusicTimer()
         self.timer.start()
-        # self.timer.start()
         self.frame_time = 60.0 / 1000.0
         self.prev_time = 0
 
@@ -82,14 +78,8 @@ class PyDis50000(CameraWindow):
         projection = self.camera.projection.matrix
         modelview = matrix44.multiply(matrix44.multiply(translation, rotation), self.camera.matrix)
 
-        self.ctx.enable_only(moderngl.NOTHING)
-        self.milkyway.render(projection, modelview)
-
-        self.ctx.enable(moderngl.DEPTH_TEST)
-        # self.voyager.render(projection, modelview)
-
-        # self.avatar_cloud.render(projection, modelview)
-        self.morph_cloud.render(projection, modelview, time=time)
+        for effect in self.router.gen_active_effects(time):
+            effect.render(time=time, projection=projection, modelview=modelview)
 
     def key_event(self, key, action, modifiers):
         super().key_event(key, action, modifiers)
@@ -102,6 +92,27 @@ class PyDis50000(CameraWindow):
                 self.timer.set_time(self.timer.get_time() - 10)
             elif key == keys.RIGHT:
                 self.timer.set_time(self.timer.get_time() + 10)
+
+
+class EffecRouter:
+    """Decides what effects are active at a given point in time"""
+    def __init__(self, config):
+        self.effects = []
+        # Create the effect instances
+        self.effects.append(AvatarCloud(config))
+        self.effects.append(Milkyway(config))
+        self.effects.append(MorphCloud(config))
+        self.effects.append(Voyager(config))
+        # self.earth = Earth(self)
+
+        # Sort by order
+        self.effects.sort(key=lambda x: x.order)
+
+    def gen_active_effects(self, time):
+        for effect in self.effects:
+            value = effect.rocket_timeline_track.time_value(time)
+            if value > 0.5:
+                yield effect
 
 
 if __name__ == '__main__':

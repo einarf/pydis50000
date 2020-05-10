@@ -1,7 +1,10 @@
+import moderngl
 from pydis50000.base import Effect
 
 
 class Earth(Effect):
+    name = 'earth'
+    order = 100
 
     def __init__(self, config):
         super().__init__(config)
@@ -32,7 +35,8 @@ class Earth(Effect):
         self.prog['texture_clouds'] = 2
         # self.prog['texture_specular'] = 3
 
-    def render(self, projection, modelview, time=0):
+    def render(self, time=0, frametime=0, projection=None, modelview=None, target=None):
+        self.ctx.enable_only(moderngl.DEPTH_TEST)
         rot =  matrix44.create_from_eulers([0.0, 0.0, -time / 5.0], dtype='f4'),
         earth_matrix = matrix44.multiply(rot, modelview)
         
