@@ -12,7 +12,9 @@ class Milkyway(Effect):
 
         self.prog =self.config.load_program('programs/milkyway.glsl')
         self.sphere = geometry.sphere(radius=200)
-        self.texture = self.config.load_texture_2d('textures/MilkyWayPanorama4K.jpg')
+        # self.texture = self.config.load_texture_2d('textures/MilkyWayPanorama4K.jpg')
+        self.texture = self.config.load_texture_2d('textures/8k_stars_milky_way.jpg')
+        self.texture.build_mipmaps()
 
     def render(self, projection, modelview):
         sky_matrix = matrix44.create_from_matrix33(matrix33.create_from_matrix44(modelview))
