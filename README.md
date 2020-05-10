@@ -27,6 +27,8 @@ Other Controls
 ESC   : Exit application
 C     : Toggle camera on/off
 SPACE : Toggle time pause
+LEFT  : Move 10 seconds back in time
+RIGHT : Move 10 seconds forward in time
 ```
 
 ## Music
@@ -64,5 +66,25 @@ Ending (30s)
 
 Fadeout (8s)
 03:26 - 03:34
-
 ```
+
+## Ideas
+
+* Avatar point clouds
+* Avatar point clouds with morphing
+* Generate morph points from textures
+* Generic additive blended points (blue-ish)
+* Bloom or similar?
+* Python Discord Logo
+* Some text from the discord announcement
+* Possibly a "made with python" thing
+* Fade cuts makes thing simple
+* Blue ball thingy avatars are attracted to. It's pulsing with the music
+* Find other subtle things in music we can take advantage of
+
+Meh? Might not fit, but could be emergency filler
+
+* Include staff + owners in some way? Show avatars at some point in the background
+* Sagan image (barely visible)
+* Earth Model
+* Voyager model
