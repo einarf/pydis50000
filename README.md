@@ -33,6 +33,19 @@ RIGHT : Move 10 seconds forward in time
 
 ## Music
 
+Suggestion II: Original music by lemon - "Deep Space Jungle Odyssey"
+BPM: 150
+
+Timestamps
+```
+0:20: journey starts (buildup)
+0:38: deep in the jungle 
+01:03: things are getting weird
+01:12: OH SHIT WHERE ARE WE (climax)
+01:27: calm down, we survived
+```
+
+
 Suggestion : https://freemusicarchive.org/music/Scott_Holmes/Cinematic_Background_Music/-_Together_We_Stand
 BPM: 112
 
