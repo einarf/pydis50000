@@ -18,9 +18,26 @@ color="ffa9b250">
 	<track name="active:morph_cloud" folded="0" muteKeyCount="0"
 color="ffa9b250">
 		<key row="780" value="1.000000" interpolation="0" />
+		<key row="2507" value="0.000000" interpolation="0" />
+	</track>
+	<track name="morph_cloud:morph" folded="0" muteKeyCount="0"
+color="ff4f71b2">
+		<key row="780" value="0.000000" interpolation="2" />
+		<key row="1260" value="1.000000" interpolation="0" />
 	</track>
 	<track name="active:voyager" folded="0" muteKeyCount="0"
 color="ff60b250" />
+	<track name="active:logo" folded="0" muteKeyCount="0"
+color="ff4fb292">
+		<key row="0" value="1.000000" interpolation="0" />
+	</track>
+	<track name="logo:fade" folded="0" muteKeyCount="0"
+color="ff8850b2">
+		<key row="112" value="0.000000" interpolation="2" />
+		<key row="252" value="1.000000" interpolation="2" />
+		<key row="728" value="1.000000" interpolation="2" />
+		<key row="780" value="0.000000" interpolation="2" />
+	</track>
 	<track name="camera:pos_x" folded="0" muteKeyCount="0"
 color="ffb27474" />
 	<track name="camera:pos_y" folded="0" muteKeyCount="0"
@@ -51,21 +68,9 @@ color="ffa9b250">
 		<key row="0" value="0.000000" interpolation="1" />
 		<key row="112" value="1.000000" interpolation="0" />
 	</track>
-	<track name="active:logo" folded="0" muteKeyCount="0"
-color="ff4fb292">
-		<key row="0" value="1.000000" interpolation="0" />
-	</track>
-	<track name="morph_cloud:morph" folded="0" muteKeyCount="0"
-color="ff4f71b2">
-		<key row="780" value="0.000000" interpolation="2" />
-		<key row="1260" value="1.000000" interpolation="0" />
-	</track>
-	<track name="logo:fade" folded="0" muteKeyCount="0"
-color="ff8850b2">
-		<key row="112" value="0.000000" interpolation="2" />
-		<key row="252" value="1.000000" interpolation="2" />
-		<key row="728" value="1.000000" interpolation="2" />
-		<key row="780" value="0.000000" interpolation="2" />
+	<track name="active:blue_ball" folded="0" muteKeyCount="0"
+color="ffb25091">
+		<key row="2507" value="1.000000" interpolation="0" />
 	</track>
 </tracks>
 	</rootElement>

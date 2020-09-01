@@ -13,6 +13,7 @@ from pydis50000.effects import (
     MorphCloud,
     Voyager,
     PydisLogo,
+    BlueBall,
 )
 
 from pydis50000.timers import RocketMusicTimer, RocketTimer
@@ -21,7 +22,7 @@ import pyglet
 
 RESOURCE_ROOT = Path(__file__).parent.resolve() / 'resources'
 settings.ROCKET = {
-    #'mode': 'editor',  # Connect to external editor
+    # 'mode': 'editor',  # Connect to external editor
     'mode': 'project',  # Load the project file
     'rps': 28,  # BPM: 112 / 4 = 28
     'project': RESOURCE_ROOT / 'tracks.xml',
@@ -41,7 +42,7 @@ class PyDis50000(CameraWindow):
         super().__init__(**kwargs)
         # self.wnd.mouse_exclusivity = True
         self.camera.mouse_sensitivity = 0.1
-        self.camera.velocity = 10.0
+        self.camera.velocity = 100.0
         self.camera.projection.update(near=0.01, far=1000)
         self.camera_enabled = False
 
@@ -143,6 +144,7 @@ class EffecRouter:
         self.effects.append(Voyager(config))
         self.effects.append(PydisLogo(config))
         # self.earth = Earth(self)
+        self.effects.append(BlueBall(config))
 
         # Sort by order
         self.effects.sort(key=lambda x: x.order)
